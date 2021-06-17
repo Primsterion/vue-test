@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts">
+
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import TableComponent from "../../Table/Table.vue";
@@ -41,20 +42,8 @@ export default class PageHomeComponent extends Vue {
     super();    
   }
 
-  goToEditUserPage(id: number){
-    this.$router.replace({name: 'employerEdit', params: { id } });
-  }
 
-  async removeUser(id: number){
-    this.$mainStore.removeUser(id);
-  }
-
-  updateUsers(){
-    this.users = this.$mainStore.users;
-  }
-  
   created() { 
-    console.log('home');   
     this.$mainStore.usersEvent.on(this.updateUsers);
   }
 
@@ -63,7 +52,19 @@ export default class PageHomeComponent extends Vue {
   }
 
   beforeDestroy(){
-    this.$mainStore.usersEvent.removeListener(this.removeUser);
+    this.$mainStore.usersEvent.removeListener(this.updateUsers);
+  }
+
+  goToEditUserPage(id: string){
+    this.$router.push({name: 'employer', params: { id: id } });
+  }
+
+  removeUser(id: number){
+    this.$mainStore.removeUser(id);
+  }
+
+  updateUsers(){
+    this.users = this.$mainStore.users;
   }
   
 }

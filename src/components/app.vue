@@ -1,5 +1,6 @@
 <template>
     <div class="app">
+      <preloader :active="loading"/>
       <router-view/>
       <notifications group="main" />
       
@@ -9,16 +10,21 @@
 import Vue from "vue";
 import 'bootstrap/dist/css/bootstrap.css'
 import { Component } from "vue-property-decorator";
+import Preloader from '@components/Preloader/Preloader.vue';
 
-@Component
+@Component({
+  components: {
+    Preloader
+  }
+})
 export default class AppComponent extends Vue {  
+
+  loading: boolean = false
+
   constructor() {
     super();
     //console.log("AppComponent created");
-
   }  
-  created(){       
-  }
 
 }
 </script>

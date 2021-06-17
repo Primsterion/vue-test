@@ -1,14 +1,13 @@
 import _Vue from "vue";
 import ApiDataSource from "./apiDataSource";
 
-const install = (Vue: typeof _Vue, url?: string) => {
-  const websocket = new ApiDataSource(url);
-  Vue.prototype.$api = websocket;
-  (Vue as any).$api = websocket;
-}
-  
-  const plugin = {
-      install
+
+  export default {
+    install: (Vue: typeof _Vue, url?: string, reconnectEnabled: boolean = false, vueNameField: string = "$api") => {
+      const websocket = new ApiDataSource(url);  
+      if(websocket.webApiService.reconnectEnabled!==undefined)
+        websocket.webApiService.reconnectEnabled = reconnectEnabled||false;
+      Vue.prototype[vueNameField] = websocket;
+      (Vue as any)[vueNameField] = websocket;
+    }
   }
-  
-  export default plugin

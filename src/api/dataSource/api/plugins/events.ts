@@ -15,13 +15,18 @@ export class Events<T> {
     }
   }
   removeListener(callback: ((res: T) => any)) {
-    const idx = this.handlers.indexOf(callback);
+    let idx = this._handlers.indexOf(callback);
     if (idx !== -1) {
       this._handlers.splice(idx, 1);
+    }else {
+      idx = this._onceHandlers.indexOf(callback);
+      this._onceHandlers.splice(idx, 1);      
     }
   }
   trigger(args: T) {
+    // копируем, чтобы не очищать все onceHandlers, т.к. возможно что в обработчике кто-то подпишется на них
+    const onceHandlersCopy = this._onceHandlers.slice();
     this.handlers.forEach(x => x(args));
-    this._onceHandlers = new Array<((res: T) => any)>();
+    this._onceHandlers = this._onceHandlers.filter(x => onceHandlersCopy.indexOf(x) === -1);
   }
 } 

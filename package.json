@@ -8,14 +8,16 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --watch",
     "set-registry": "npm set registry http://194.28.112.20:4873/",
-    "install-dataSourceBuilder": "npm i git+http://192.168.1.252:8888/project-manager/plugins/data-source-builder.git -g",
-    "build-data-source": "build-data-source {{selectApiType}} {{apiUrl}} src/api"
+    "install-dataSourceBuilder": "npm i git+http://gitlab.tirscript.com:8888/project-manager/plugins/data-source-builder.git -g",
+    "build-data-source": "build-data-source ws wss://dashboard-dev.evoshare.com/websocket src/api"
   },
   "repository": {
     "type": "git",
     "url": ""
   },
   "dependencies": {
+    "js-cookie": "^2.2.1",
+    "@types/js-cookie": "^2.2.6",
     "bootstrap": "^5.0.1",
     "vue-notification": "^1.3.20"
   },

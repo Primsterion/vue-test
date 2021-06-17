@@ -1,0 +1,22 @@
+enum IUserRole {
+	None = 0,
+	Buyer = 1,
+	Seller = 2,
+	Employer = 4,
+	Admin = 8,
+	BuyerIRA = 16,
+	Viewer = 32,
+	Manager = 64,
+	Publisher = 128,
+	Student = 256,
+	Agent = 512,
+	SuperAdmin = 2048,
+	CollegeFund = 4096,
+	Reseller = 8192,
+	Adviser = 32768,
+	Health = 65536,
+	Emergency = 131072,
+	TaxableBrokerage = 262144,
+	Cryptocurrency = 524288
+}
+export default IUserRole

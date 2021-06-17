@@ -13,7 +13,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const path = require('path');
-var apiBaseUrl = '{{apiUrl}}';//http://localhost:64622
+var apiBaseUrl = 'wss://dashboard-dev.evoshare.com/websocket';//http://localhost:64622
 var apiUrl = isDevelopment? apiBaseUrl : apiBaseUrl.replace(/\w+\:\/\/[\w\:]+\//i, "/") ;//http://тест.школа-пмр.рф/web-api
 
 

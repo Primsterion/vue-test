@@ -10,22 +10,21 @@ import { Component } from "vue-property-decorator";
 
 @Component
 export default class PageOtherComponent extends Vue {
-  
-  
   constructor() {
     super();    
   }
+
   created() { 
     console.log('other');   
   }
+
   get id(){
       if(!this.$route)
         return '';
       return this.$route.params.id;
   }
-  mounted() {
-  
 
+  mounted() {
     
   }
   

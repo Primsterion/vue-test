@@ -7,6 +7,7 @@ import BaseLayout from "@layouts/base-layout.vue";
 import PageHome from "@pages/home/home.vue";
 import PageOther from "@pages/other/other.vue";
 import PageEmployerForm from "@pages/employer-form/employer-form.vue";
+import PageLogin from "@pages/login/login.vue";
 
 
 const router = new VueRouter({
@@ -25,24 +26,25 @@ const router = new VueRouter({
         {
           name:"other",
           path: "other/:id?",
-          component: PageOther
-        },
-        {
-          name: "employerAdd",
-          path: "employer/add",
-          component: PageEmployerForm,
+          component: PageOther,
           meta: {
-            type: 'add'
+            allowAnonymous: true
           }
         },
         {
-          name: "employerEdit",
-          path: "employer/:id/edit",
-          component: PageEmployerForm,
-          meta: {
-            type: 'edit'
-          }
+          name: "employer",
+          path: "employer/:id?",
+          component: PageEmployerForm
         },
+        {
+          name: "login",
+          path: "login",
+          component: PageLogin,
+          meta: {
+            allowAnonymous: true
+          }
+        }
+
       
         // {
         //   path: "Новости",
@@ -88,7 +90,50 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
- // console.log(to, from, next);
+  
+  if(!to.meta.allowAnonymous){
+    Vue.$mainStore.setLoading(true);
+    Vue.$api.UserService.GetCurrentUserEvent.once(async (res) => {
+      if(res.IsSuccess){
+        Vue.$mainStore.setAuthorized(res.Value.IsAuthorized);
+
+        if(!res.Value.IsAuthorized){
+          router.push({name: 'login'});
+        }else if(to.name == 'login'){
+          router.push({name: 'home'});
+        }
+
+      }else{
+        router.push({name: 'login'});
+      }
+
+      Vue.$mainStore.setLoading(false);
+    })
+
+    Vue.$api.UserService.GetCurrentUser();
+
+  }else{
+    if(to.name === 'login'){
+      Vue.$api.UserService.GetCurrentUserEvent.once(async (res) => {
+        if(res.IsSuccess){
+          Vue.$mainStore.setAuthorized(res.Value.IsAuthorized);
+          if(res.Value.IsAuthorized){
+            router.push({name: 'home'});
+          }
+        }
+  
+        Vue.$mainStore.setLoading(false);
+        
+      })
+
+      Vue.$api.UserService.GetCurrentUser();
+    }
+  }
+
+ 
+
+
+//  console.log(to, from, next);
   //var title = Vue.$mainStore.PageTitle;
   // if (to.meta.title) {
   //   if (title) title = `${to.meta.title} | ${title}`;

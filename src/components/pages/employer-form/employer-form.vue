@@ -23,6 +23,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from "vue-property-decorator";
+import User from '@components/pages/employer-form/models/user';
 
 
 @Component
@@ -31,24 +32,20 @@ export default class PageEmployerFormComponent extends Vue{
         super();
     }
 
-    currentUser: Object = {
-        name: '',
-        status: '',
-        phone: ''
-    };
+    currentUser: User = new User();
 
     get id(){
         if(!this.$route)
             return false;
-        return this.$route.params.id;
+        return parseInt(this.$route.params.id);
     }
 
     phoneValid: Boolean = false
 
     addUser(){
-        if(this.name !== '' && this.status !== '' && this.phoneValid){
+        if(this.currentUser.name !== '' && this.currentUser.status !== '' && this.phoneValid){
             this.$mainStore.addUsers([...this.$mainStore.users, this.currentUser]);
-            this.$router.replace({name: 'home'});
+            this.$router.push({name: 'home'});
             this.$notify({
                 group: 'main',
                 title: 'Success',
@@ -72,7 +69,7 @@ export default class PageEmployerFormComponent extends Vue{
                 title: 'Success',
                 text: 'User has been update success'
             });
-            this.$router.replace({name: 'home'});
+            this.$router.push({name: 'home'});
         } catch (error) {
              this.$notify({
                 group: 'main',
@@ -89,7 +86,8 @@ export default class PageEmployerFormComponent extends Vue{
     }
    
     mounted(){
-        if(!this.id){
+        const id = this.id;
+        if(!id){
             this.currentUser =  {
                 id: this.$mainStore.users.length + 1,
                 name: '',
@@ -97,9 +95,10 @@ export default class PageEmployerFormComponent extends Vue{
                 phone: ''
             }
         }else{
-            const users = this.$mainStore.users.filter(user => user.id === this.id);
+            const users = this.$mainStore.users.filter(user => user.id === id);
             if(users.length > 0){
-                Object.assign(this.currentUser, users[0]);
+                console.log(users[0]);
+                this.currentUser = users[0];
                 this.phoneCheck();
             }else{
                 this.$notify({
@@ -111,8 +110,6 @@ export default class PageEmployerFormComponent extends Vue{
             }
         }
     }
-
-    
 }
 
 </script>

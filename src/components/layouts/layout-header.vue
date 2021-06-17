@@ -1,10 +1,11 @@
 <template>
   <header class="col-12">
-    <nav>
+    <nav v-if="authStatus">
       <ul>
         <li><r-link route="home">Home</r-link></li>
         <li><r-link route="other" :params="{id:23}">Other</r-link></li>
       </ul>
+      <button class="btn btn-warning" @click="logout">Logout</button>
     </nav>
   </header>
 </template>
@@ -14,12 +15,40 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component
 export default class HeaderComponent extends Vue {
+ 
+
+  authStatus: boolean = true;
+  
   constructor() {
     super();
   }
 
-
   created() {
+    this.$mainStore.appEvents.on(this.updateAuth)
+  }
+
+  mounted(){
+    this.authStatus = this.$mainStore.authorized;
+  }
+
+  updateAuth(){
+    console.log("UPDATE");
+    this.authStatus = this.$mainStore.authorized;
+  }
+
+  beforeDestroy(){
+    this.$mainStore.appEvents.removeListener(this.updateAuth)
+  }
+
+  logout(){
+    this.$api.AuthorizationService.LogoutEvent.once(res => {
+      if(res.IsSuccess){
+        this.$mainStore.setAuthorized(false);
+        this.$router.push({name: 'login'});
+      }
+    });
+
+    this.$api.AuthorizationService.Logout();
   }
   
 }
@@ -39,6 +68,8 @@ export default class HeaderComponent extends Vue {
   nav{
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   ul{

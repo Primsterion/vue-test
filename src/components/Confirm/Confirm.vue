@@ -33,9 +33,9 @@ export default class PopupComponent extends Vue{
     @Prop({type: String, required: true, default: 'Warning'}) title: String;
     @Prop({type: Object, required: true, default: {close: 'Cancel', submit: 'Ok'}}) button: Object;
 
-    @Emit('close')
+    
     onClose(){
-        return false;
+      this.$emit('close');
     }
 
     @Emit('confirm')

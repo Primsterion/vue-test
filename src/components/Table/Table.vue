@@ -6,7 +6,7 @@
             <input type="text" class="form-control" v-model="searchValue" @input="currentPage = 1" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="table-add-record">
-           <r-link route="employerAdd"><button class="btn btn-primary" title="Add new user">Add</button></r-link>
+           <r-link route="employer"><button class="btn btn-primary" title="Add new user">Add</button></r-link>
         </div>
     </div>
     <table class="table table-striped table-bordered">
@@ -45,11 +45,11 @@
       </tbody>
     </table>
     <div class="pagination">
-        <p @click="--currentPage" v-if="totalPages > 2"><</p>
+        <p @click="--currentPage" v-if="totalPages > 2">&lt;</p>
         <p :class="`pagination__page ${currentPage === pageNumber ? 'active' : ''}`" v-for="pageNumber in totalPages" :key="pageNumber" @click="currentPage = pageNumber--">
             {{ pageNumber }}
         </p>
-        <p @click="++currentPage" v-if="totalPages > 2">></p>
+        <p @click="++currentPage" v-if="totalPages > 2">&gt;</p>
     </div>
     <confirm title="Remove user?" text="Do you want to remove user?" :button="{close: 'Cancel', submit: 'Remove'}" :show="removeConfirmShow" @close="removeConfirmShow = false" @confirm="remove"/>
   </div>
@@ -59,6 +59,7 @@
 import Vue from "vue";
 import { Component, Prop, Emit } from "vue-property-decorator";
 import Confirm from '@components/Confirm/Confirm.vue';
+import User from "@pages/employer-form/models/user";
 
 @Component({
     components: {
@@ -70,17 +71,21 @@ export default class TableComponent extends Vue {
         super();
     }
     
-    @Prop({type: Array, required: true, default: []}) data: Array<Object>;
+    @Prop({type: Array, required: true, default: []}) data: Array<User>;
     @Prop({type: Array, required: true, default: []}) headers: Array<Object>;
-    @Prop({type: Number, required: true, default: 10}) perPage: Array<Object>;
+    @Prop({type: Number, required: true, default: 10}) perPage: number;
     @Prop({type: Boolean, required: false, default: false}) showSearch: Boolean;
     @Prop({type: String, required: false, default: ''}) searchBy: String;
     
     page: number = 1;
-    pageUsers: Array<Object> = this.data.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
+    pageUsers: Array<Object> = new Array<Object>();
     searchValue: string = '';
     removeConfirmShow: Boolean = false;
     chooseUserId: Number;
+
+    created(){
+        this.pageUsers = this.data.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);;
+    }
 
     get totalPages(){
         return Math.ceil(this.data.length / this.perPage);
@@ -108,7 +113,7 @@ export default class TableComponent extends Vue {
 
             if(this.searchBy){
                 for(const key of this.searchBy.split(',')){
-                    if(row[key.trim()].toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1){
+                    if(row[key.trim()].toString().toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1){
                         return true;
                     }
                 }
@@ -125,15 +130,13 @@ export default class TableComponent extends Vue {
         this.chooseUserId = id;
     }
 
-    @Emit('onRemove')
     remove(){
         this.removeConfirmShow = false;
-        return this.chooseUserId;
+        this.$emit('onRemove', this.chooseUserId);
     }
 
-    @Emit('onEdit')
     edit(id: number){
-        return id;
+        this.$emit('onEdit', id);
     }
 
 }
