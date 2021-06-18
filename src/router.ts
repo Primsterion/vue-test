@@ -100,7 +100,7 @@ router.beforeEach((to, from, next) => {
         if(!res.Value.IsAuthorized){
           router.push({name: 'login'});
         }else if(to.name == 'login'){
-          router.push({name: 'home'});
+          router.push({name: to.name ?? 'home'});
         }
 
       }else{
